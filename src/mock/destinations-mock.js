@@ -12,7 +12,7 @@ export const destinationsElementsMock = [
   },
   {
     'id': '2',
-    'description': 'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
+    'description': 'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsumю',
     'name': 'Amsterdam',
     'pictures': [
       {

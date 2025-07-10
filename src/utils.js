@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { TIME_SUFFIXES } from './const';
+import { TIME_MESURES } from './const';
 
 export const getRandomArrayElement = (array) => {
   const randomElement = Math.floor(Math.random() * array.length);
@@ -27,20 +27,6 @@ export const getDestinationFromId = (idNumber, destinationsElementsArray) => {
   return destinationName;
 };
 
-export const getOffersFromTypes = (eventType, offersElementsArray) => {
-  let offersArray = [];
-
-  offersElementsArray.forEach((offersElement) => {
-    const {type, offers} = offersElement;
-
-    if (type === eventType) {
-      offersArray = offers;
-    }
-  });
-
-  return offersArray;
-};
-
 export function formatDate(date, format) {
   return dayjs(date).format(format);
 }
@@ -59,7 +45,7 @@ export function formatDuration(dateFrom, dateTo) {
   for (let i = 0; i < durationElements.length; i++) {
     if (durationElements[i] > 0) {
       if (durationElements[i] < 10) {
-        durationResult.push(`0${durationElements[i]}${TIME_SUFFIXES[i]}`);
+        durationResult.push(`0${durationElements[i]}${TIME_MESURES[i]}`);
         continue;
       }
 

@@ -2,26 +2,22 @@ import { createElement } from '../render.js';
 import { TIME_FORMATS } from '../const';
 import { formatDate } from '../utils';
 
-function createEditFormTemplate(point, offer, destination) {
+function createEditFormTemplate(point, availableOffers, destination) {
   const {name, description} = destination;
-  const {offers} = offer;
-  const {date_from : dateFrom, date_to: dateTo, base_price: basePrice} = point;
+  const {date_from: dateFrom, date_to: dateTo, base_price: basePrice, selectedOffers = []} = point;
 
-  const offersList = offers
-    .map((offerElement) => {
-      const checked = offers.includes(offerElement.id) ? 'cheacked' : '';
-      const offerName = offerElement.title.toLowerCase().split(' ').join('-');
-
-      return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerName}-${offerElement.id}" type="checkbox" name="event-offer-${offerName}" ${checked}>
+  const offersList = availableOffers.map((offerElement) => {
+    const checked = selectedOffers.includes(offerElement.id) ? 'checked' : '';
+    const offerName = offerElement.title.toLowerCase().split(' ').join('-');
+    return `<div class="event__offer-selector">
+      <input class="event__offer-checkbox visually-hidden" id="event-offer-${offerName}-${offerElement.id}" type="checkbox" name="event-offer-${offerName}" ${checked}>
       <label class="event__offer-label" for="event-offer-${offerName}-${offerElement.id}">
         <span class="event__offer-title">${offerElement.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offerElement.price}</span>
       </label>
     </div>`;
-    })
-    .join('');
+  }).join('');
 
   return `
     <li class="trip-events__item">
@@ -140,21 +136,20 @@ function createEditFormTemplate(point, offer, destination) {
 }
 
 export default class EditFormView {
-  constructor(point, offer, destination) {
+  constructor(point, availableOffers, destination) {
     this.point = point;
-    this.offer = offer;
+    this.availableOffers = availableOffers;
     this.destination = destination;
   }
 
   getTemplate() {
-    return createEditFormTemplate(this.point, this.offer, this.destination);
+    return createEditFormTemplate(this.point, this.availableOffers, this.destination);
   }
 
   getElement() {
-    if(!this.element) {
+    if (!this.element) {
       this.element = createElement(this.getTemplate());
     }
-
     return this.element;
   }
 

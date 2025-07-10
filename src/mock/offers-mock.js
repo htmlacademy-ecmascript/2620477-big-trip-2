@@ -14,17 +14,17 @@ export const offersElementsMock = [
       },
       {
         'id': '2',
-        'title': 'Drive a little bit slowly.',
+        'title': 'Drive a little bit slowly',
         'price': getRandomValue(MIN_PRICE, MAX_PRICE)
       },
       {
         'id': '3',
-        'title': 'Choose the radio station.',
+        'title': 'Choose the radio station',
         'price': getRandomValue(MIN_PRICE, MAX_PRICE)
       },
       {
         'id': '4',
-        'title': 'Open the door before and after.',
+        'title': 'Open the door before and after',
         'price': getRandomValue(MIN_PRICE, MAX_PRICE)
       }
     ]
@@ -34,12 +34,12 @@ export const offersElementsMock = [
     'offers': [
       {
         'id': '1',
-        'title': 'Modern sights mostly.',
+        'title': 'Modern sights mostly',
         'price': getRandomValue(MIN_PRICE, MAX_PRICE)
       },
       {
         'id': '2',
-        'title': 'A way without lots of people.',
+        'title': 'A way without lots of people',
         'price': getRandomValue(MIN_PRICE, MAX_PRICE)
       }
     ]
@@ -49,17 +49,17 @@ export const offersElementsMock = [
     'offers': [
       {
         'id': '1',
-        'title': 'Choose the time of check-in.',
+        'title': 'Choose the time of check-in',
         'price': getRandomValue(MIN_PRICE, MAX_PRICE)
       },
       {
         'id': '2',
-        'title': 'Choose the time of check-out.',
+        'title': 'Choose the time of check-out',
         'price': getRandomValue(MIN_PRICE, MAX_PRICE)
       },
       {
         'id': '3',
-        'title': 'Add breakfast.',
+        'title': 'Add breakfast',
         'price': getRandomValue(MIN_PRICE, MAX_PRICE)
       }
     ]

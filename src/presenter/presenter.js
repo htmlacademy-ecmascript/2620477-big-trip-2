@@ -22,21 +22,28 @@ export default class Presenter {
   }
 
   init() {
-    this.pointsArray = [...this.pointsModel.getPoints()];
-    this.offersArray = [...this.offersModel.getOffers()];
-    this.destinationsModel = [...this.destinationsModel.getDestinations()];
+    this.points = [...this.pointsModel.getPoints()];
+    this.offers = [...this.offersModel.getOffers()];
+    this.destinations = [...this.destinationsModel.getDestinations()];
 
     render(new TripTitleView(), this.tripMainElement, RenderPosition.AFTERBEGIN);
     render(new FilterView(), this.filterContainer);
     render(new SortView(), this.eventsContainer);
     render(this.eventListComponent, this.eventsContainer);
-    render(new EditFormView(), (this.pointsArray[0], this.offersArray[0], this.destinationsModel[0]), this.eventListComponent.getElement());
-
-    for (let i = 0; i < this.pointsArray.length; i++) {
-      render(new RoutePointView(this.pointsArray[i], this.offersArray[i],
-        this.destinationsModel[i]), this.routePointListElement.getElement());
-    }
 
     render(new CreateFormView(), this.eventListComponent.getElement());
+
+    if (this.points.length > 0) {
+      const point = this.points[0];
+      const offersForType = this.offers.find((offer) => offer.type === point.type)?.offers || [];
+      const destination = this.destinations.find((dest) => dest.name === point.destination);
+      const editForm = new EditFormView(point, offersForType, destination);
+      render(editForm, this.eventListComponent.getElement());
+    }
+
+    for (let i = 0; i < this.points.length - 1; i++) {
+      const routePoint = new RoutePointView(this.points[i], this.offers, this.destinations[i]);
+      render(routePoint, this.eventListComponent.getElement());
+    }
   }
 }
