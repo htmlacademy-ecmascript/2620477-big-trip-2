@@ -1,13 +1,14 @@
 import Presenter from './presenter/presenter.js';
+import RoutePoint from './model/route-points-model.js';
 
-const tripMainElement = document.querySelector('.trip-main');
-const filterContainer = document.querySelector('.trip-controls__filters');
-const eventsContainer = document.querySelector('.trip-events');
+const siteFiltersElement = document.querySelector('.trip-main__trip-controls');
+const siteMainElement = document.querySelector('.trip-events');
+const routePointModel = new RoutePoint();
 
-const boardPresenter = new Presenter({
-  tripMainElement,
-  filterContainer,
-  eventsContainer,
+const presenter = new Presenter({
+  headerContainer: siteFiltersElement,
+  mainContainer: siteMainElement,
+  routePointModel,
 });
 
-boardPresenter.init();
+presenter.init();
