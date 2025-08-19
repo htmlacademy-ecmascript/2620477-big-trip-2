@@ -200,6 +200,7 @@ const mockDate = [
 
 /**
  * RandomRoutePoint
+ * Генерация случайной точки маршрута
  * @typedef {Object} RandomRoutePoint
  * @property {string} RandomRoutePoint.id
  * @property {number} RandomRoutePoint.basePrice

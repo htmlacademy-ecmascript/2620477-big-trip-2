@@ -6,11 +6,11 @@ import RoutePoint from '../view/route-point-view.js';
 import NewEventBtn from '../view/new-event-btn-view.js';
 import NoEvent from '../view/no-event-view.js';
 import TripTitleView from '../view/trip-title-view.js';
+import { generateFilter } from '../mock/filter-mock.js';
 export default class TripPresenter {
   #headerContainer;
   #mainContainer;
   #routePointModel;
-  #filters = new Filters();
   #sorting = new Sorting();
   #title = new TripTitleView();
   #buttonNewEvent = new NewEventBtn();
@@ -69,9 +69,10 @@ export default class TripPresenter {
   }
 
   #renderApp() {
-    render(this.#title, this.#headerContainer);
-    render(this.#filters, this.#headerContainer);
+    const filters = generateFilter(this.#routePoints);
+    render(new Filters({ filters }), this.#headerContainer);
     render(this.#buttonNewEvent, this.#headerContainer, RenderPosition.AFTEREND);
+    render(this.#title, this.#headerContainer, RenderPosition.BEFOREBEGIN);
 
     if (this.#routePoints.length === 0) {
       render(new NoEvent(), this.#mainContainer);
