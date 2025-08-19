@@ -1,12 +1,14 @@
-import { render, replace, RenderPosition } from '../framework/render.js';
-import FormEdit from '../view/edit-form-view.js';
+import { render, RenderPosition } from '../framework/render.js';
 import Filters from '../view/filter-view.js';
 import Sorting from '../view/sort-view.js';
-import RoutePoint from '../view/route-point-view.js';
 import NewEventBtn from '../view/new-event-btn-view.js';
 import NoEvent from '../view/no-event-view.js';
 import TripTitleView from '../view/trip-title-view.js';
 import { generateFilter } from '../mock/filter-mock.js';
+import RoutePointPresenter from './route-point-presenter.js';
+import RoutePointListView from '../view/route-point-list-view.js';
+import { updateItem } from '../mock/utils.js';
+
 export default class TripPresenter {
   #headerContainer;
   #mainContainer;
@@ -14,68 +16,71 @@ export default class TripPresenter {
   #sorting = new Sorting();
   #title = new TripTitleView();
   #buttonNewEvent = new NewEventBtn();
+  #routePointListComponent;
   #routePoints = [];
+  #routePointPresenters = new Map();
 
   constructor({ headerContainer, mainContainer, routePointModel }) {
     this.#headerContainer = headerContainer;
     this.#mainContainer = mainContainer;
     this.#routePointModel = routePointModel;
+    this.#routePointListComponent = new RoutePointListView();
   }
 
   init() {
     this.#routePoints = [...this.#routePointModel.routePoints];
     this.#renderApp();
+    render(this.#routePointListComponent, this.#mainContainer);
   }
 
   #renderRoutePoint(point) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const routePoint = new RoutePoint({
-      routePoint: point,
-      offers: [...this.#routePointModel.getOffersById(point.type, point.offersId)],
-      destination: this.#routePointModel.getDestinationsById(point.destination),
-      onEditClick: () => {
-        replacePointToForm();
-        document.addEventListener('keydown', escKeyDownHandler);
-      }
+    const routePointPresenter = new RoutePointPresenter({
+      routePointListComponent: this.#routePointListComponent,
+      routePointModel: this.#routePointModel,
+      onDataChange: this.#handleRoutePointChange,
+      onModeChange: this.#handleModeChange,
     });
+    routePointPresenter.init(point);
+    this.#routePointPresenters.set(point.id, routePointPresenter);
+  }
 
-    const formEdit = new FormEdit({
-      routePoint: point,
-      offersType: this.#routePointModel.getOffersByType(point.type),
-      offers: [...this.#routePointModel.getOffersById(point.type, point.offersId)],
-      destination: this.#routePointModel.getDestinationsById(point.destination),
-      destinationAll: this.#routePointModel.destinations,
-      onFormSubmit: () => {
-        replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    });
+  #clearRoutePointList() {
+    this.#routePointPresenters.forEach((presenter) => presenter.destroy());
+    this.#routePointPresenters.clear();
+  }
 
-    function replacePointToForm() {
-      replace(formEdit, routePoint);
-    }
+  #handleModeChange = () => {
+    this.#routePointPresenters.forEach((presenter) => presenter.resetView());
+  };
 
-    function replaceFormToPoint() {
-      replace(routePoint, formEdit);
-    }
-    render(routePoint, this.#mainContainer);
+  #handleRoutePointChange = (updatedRoutePoint) => {
+    this.#routePoints = updateItem(this.#routePoints, updatedRoutePoint);
+    this.#routePointPresenters.get(updatedRoutePoint.id).init(updatedRoutePoint);
+  };
+
+  #renderFilters() {
+    const filters = generateFilter(this.#routePoints);
+    render(new Filters({ filters }), this.#headerContainer);
+  }
+
+  #renderButtonNewEvent() {
+    render(this.#buttonNewEvent, this.#headerContainer, RenderPosition.AFTEREND);
+  }
+
+  #renderTripTitle() {
+    render(this.#title, this.#headerContainer, RenderPosition.BEFOREBEGIN);
+  }
+
+  #renderNoEvent() {
+    render(new NoEvent(), this.#mainContainer);
   }
 
   #renderApp() {
-    const filters = generateFilter(this.#routePoints);
-    render(new Filters({ filters }), this.#headerContainer);
-    render(this.#buttonNewEvent, this.#headerContainer, RenderPosition.AFTEREND);
-    render(this.#title, this.#headerContainer, RenderPosition.BEFOREBEGIN);
-
+    this.#renderFilters();
+    this.#renderButtonNewEvent();
+    this.#renderTripTitle();
     if (this.#routePoints.length === 0) {
-      render(new NoEvent(), this.#mainContainer);
+      this.#renderNoEvent();
       return;
     }
 
