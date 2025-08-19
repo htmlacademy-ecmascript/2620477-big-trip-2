@@ -2,7 +2,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { TextNoEvent } from '../mock/constants.js';
 
 function createNoEventTemplate() {
-  return (`<p class="trip-events__msg">${TextNoEvent.everything}</p>`);
+  return (`<p class="trip-events__msg">${TextNoEvent.EVERYTHING}</p>`);
 }
 
 export default class NoEvent extends AbstractView {
