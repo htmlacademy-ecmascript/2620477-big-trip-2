@@ -44,4 +44,9 @@ const filter = {
   [FilterType.PRESENT]: (points) => points.filter((point) => checksTravelIsSame(point.dateFrom)),
   [FilterType.FUTURE]: (points) => points.filter((point) => checksTravelIsAfter(point.dateFrom)),
 };
-export { getRandomInteger, getRandomArrayElement, humanizeDueDate, getDuration, filter };
+
+function updateItem(items, update) {
+  return items.map((item) => item.id === update.id ? update : item);
+}
+
+export { getRandomInteger, getRandomArrayElement, humanizeDueDate, getDuration, filter, updateItem };
