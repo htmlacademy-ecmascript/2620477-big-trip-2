@@ -11,10 +11,10 @@ const ROUTEPOINT_COUNT = 7;
 const PHOTO = 'https://loremflickr.com/248/152?random=';
 const OFFER_TITLE = ['Add luggage', 'Switch to comfort class', 'Add meal', 'Choose seats', 'Travel by train', 'Order Uber'];
 const DATE_FORMAT = {
-  day: 'MMM D',
-  hoursMinutes: 'HH:mm',
-  year: 'DD/MM/YY HH:mm',
-  fullDate: 'YYYY-MM-DD',
+  DAY: 'MMM D',
+  HOURS_MINUTES: 'HH:mm',
+  YEAR: 'DD/MM/YY HH:mm',
+  FULL_DATE: 'YYYY-MM-DD',
 };
 const CLASS_NAME = {
   'Add luggage': 'luggage',
@@ -36,5 +36,16 @@ const FilterType = {
   PRESENT: 'present',
   FUTURE: 'future',
 };
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+const SORTING = ['day', 'event', 'time', 'price', 'offers'];
+const SortType = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price',
+};
 
-export { TYPE, CITIES, DESCRIPTION, PHOTO, OFFER_TITLE, DATE_FORMAT, CLASS_NAME, TextNoEvent, ROUTEPOINT_COUNT, FilterType };
+export { TYPE, CITIES, DESCRIPTION, PHOTO, OFFER_TITLE, DATE_FORMAT,
+  CLASS_NAME, TextNoEvent, ROUTEPOINT_COUNT, FilterType, Mode, SORTING, SortType };
