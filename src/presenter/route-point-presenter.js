@@ -1,11 +1,7 @@
 import { render, replace, remove } from '../framework/render.js';
 import RoutePoint from '../view/route-point-view.js';
 import FormEdit from '../view/edit-form-view.js';
-
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING',
-};
+import { Mode } from '../mock/constants.js';
 
 export default class RoutePointPresenter {
   #routePointListComponent = null;

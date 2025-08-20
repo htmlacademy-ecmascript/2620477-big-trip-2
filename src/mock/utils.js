@@ -1,7 +1,7 @@
+import { SORTING, FilterType } from './constants.js';
 import dayjs from 'dayjs';
 import durationPlugin from 'dayjs/plugin/duration.js';
 dayjs.extend(durationPlugin);
-import { FilterType } from './constants.js';
 
 const getRandomInteger = (a = 0, b = 50) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -11,6 +11,14 @@ const getRandomInteger = (a = 0, b = 50) => {
 };
 
 const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
+
+function generateSorting(sortType) {
+  return SORTING.map((value) => ({
+    value,
+    isSelected: value === sortType,
+    isDisabled: value === 'event' || value === 'offers',
+  }));
+}
 
 const humanizeDueDate = (dueDate, format) => dueDate ? dayjs(dueDate).format(format) : '';
 
@@ -49,4 +57,38 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-export { getRandomInteger, getRandomArrayElement, humanizeDueDate, getDuration, filter, updateItem };
+function sortRoutePointByDate(routePointA, routePointB) {
+  if (routePointA.dateFrom > routePointB.dateFrom) {
+    return 1;
+  }
+  if (routePointA.dateFrom < routePointB.dateFrom) {
+    return -1;
+  }
+  return 0;
+}
+
+function sortRoutePointByDuration(routePointA, routePointB) {
+
+  const getDurationBySort = (start, end) => dayjs.duration(dayjs(end).diff(dayjs(start)));
+
+  if (getDurationBySort(routePointA.dateFrom, routePointA.dateTo) < getDurationBySort(routePointB.dateFrom, routePointB.dateTo)) {
+    return 1;
+  }
+  if (getDurationBySort(routePointA.dateFrom, routePointA.dateTo) > getDurationBySort(routePointB.dateFrom, routePointB.dateTo)) {
+    return -1;
+  }
+  return 0;
+}
+
+function sortRoutePointByPrice(routePointA, routePointB) {
+  if (Number(routePointA.basePrice) < Number(routePointB.basePrice)) {
+    return 1;
+  }
+  if (Number(routePointA.basePrice) > Number(routePointB.basePrice)) {
+    return -1;
+  }
+  return 0;
+}
+
+export { getRandomInteger, getRandomArrayElement, generateSorting, humanizeDueDate,
+  getDuration, filter, updateItem, sortRoutePointByDate, sortRoutePointByDuration, sortRoutePointByPrice };

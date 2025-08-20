@@ -2,6 +2,22 @@ import { v4 as uuidv4 } from 'uuid';
 import { TYPE, CITIES, DESCRIPTION, PHOTO, OFFER_TITLE } from './constants.js';
 import { getRandomInteger, getRandomArrayElement } from './utils.js';
 
+/**
+ * @typedef {{
+ *  id: string
+ *  title: string
+ *  price: number
+ * }} offer
+ */
+
+/**
+ * Генерация опций принадлежащих типам точки маршрута
+ * @typedef {Object} AllOffers
+ * @type {object} offers
+    * @property {string} type
+    * @property {offer[]} offers
+ */
+
 const mockOptions = [
   {
     'type': TYPE[0],
@@ -128,6 +144,22 @@ const mockOptions = [
   }
 ];
 
+/**
+ * @typedef {{
+ *  src: string
+ *  description: string
+ * }} Picture
+ */
+
+/**
+ * @typedef {{
+ *  id: string
+ *  description: string
+ *  name: string
+ *  pictures: Picture[]
+ * }} Destination
+ */
+
 const mockDestination = [
   {
     'id': '1ce4e34c-1574-4d6c-8586-e47ffaa6bfd6',
@@ -195,7 +227,22 @@ const mockDate = [
     'date-from': '2023-12-15T06:57:04.116Z',
     'date-to': '2023-12-15T17:50:04.116Z',
     'is-favorite': true,
-  }
+  },
+  {
+    'date-from': '2024-01-02T23:20:06.925Z',
+    'date-to': '2024-01-04T10:17:06.925Z',
+    'is-favorite': false,
+  },
+  {
+    'date-from': '2024-02-03T02:48:06.925Z',
+    'date-to': '2024-02-04T06:06:06.925Z',
+    'is-favorite': true,
+  },
+  {
+    'date-from': '2024-02-12T19:13:06.925Z',
+    'date-to': '2024-02-13T13:38:06.925Z',
+    'is-favorite': true,
+  },
 ];
 
 /**

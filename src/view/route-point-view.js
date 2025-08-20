@@ -3,7 +3,7 @@ import { humanizeDueDate, getDuration } from '../mock/utils.js';
 import { DATE_FORMAT } from '../mock/constants.js';
 
 function createStartDateTemplate(start) {
-  return (`<time class="event__date" datetime="${humanizeDueDate(start, DATE_FORMAT.fullDate)}">${humanizeDueDate(start, DATE_FORMAT.day)}</time>`);
+  return (`<time class="event__date" datetime="${humanizeDueDate(start, DATE_FORMAT.FULL_DATE)}">${humanizeDueDate(start, DATE_FORMAT.DAY)}</time>`);
 }
 
 function createTypeEventTemplate(routePoint, destination) {
@@ -18,9 +18,9 @@ function createTypeEventTemplate(routePoint, destination) {
 function createScheduleTemplate(start, end) {
   return (`<div class="event__schedule">
     <p class="event__time">
-      <time class="event__start-time" datetime="2019-03-18T10:30">${humanizeDueDate(start, DATE_FORMAT.hoursMinutes)}</time>
+      <time class="event__start-time" datetime="2019-03-18T10:30">${humanizeDueDate(start, DATE_FORMAT.HOURS_MINUTES)}</time>
       &mdash;
-      <time class="event__end-time" datetime="2019-03-18T11:00">${humanizeDueDate(end, DATE_FORMAT.hoursMinutes)}</time>
+      <time class="event__end-time" datetime="2019-03-18T11:00">${humanizeDueDate(end, DATE_FORMAT.HOURS_MINUTES)}</time>
     </p>
     <p class="event__duration">${getDuration(start, end)}</p>
   </div>`);

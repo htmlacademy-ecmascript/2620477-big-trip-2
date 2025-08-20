@@ -5,20 +5,24 @@ import NewEventBtn from '../view/new-event-btn-view.js';
 import NoEvent from '../view/no-event-view.js';
 import TripTitleView from '../view/trip-title-view.js';
 import { generateFilter } from '../mock/filter-mock.js';
+import { generateSorting } from '../mock/utils.js';
 import RoutePointPresenter from './route-point-presenter.js';
 import RoutePointListView from '../view/route-point-list-view.js';
-import { updateItem } from '../mock/utils.js';
+import { updateItem, sortRoutePointByDate, sortRoutePointByPrice, sortRoutePointByDuration } from '../mock/utils.js';
+import { SortType } from '../mock/constants.js';
 
 export default class TripPresenter {
   #headerContainer;
   #mainContainer;
   #routePointModel;
-  #sorting = new Sorting();
+  #sorting;
   #title = new TripTitleView();
   #buttonNewEvent = new NewEventBtn();
   #routePointListComponent;
   #routePoints = [];
   #routePointPresenters = new Map();
+  #currentSortType = SortType.DAY;
+  #sortingState = generateSorting(this.#currentSortType);
 
   constructor({ headerContainer, mainContainer, routePointModel }) {
     this.#headerContainer = headerContainer;
@@ -28,7 +32,7 @@ export default class TripPresenter {
   }
 
   init() {
-    this.#routePoints = [...this.#routePointModel.routePoints];
+    this.#routePoints = [...this.#routePointModel.routePoints].sort(sortRoutePointByDate);
     this.#renderApp();
     render(this.#routePointListComponent, this.#mainContainer);
   }
@@ -47,6 +51,12 @@ export default class TripPresenter {
   #clearRoutePointList() {
     this.#routePointPresenters.forEach((presenter) => presenter.destroy());
     this.#routePointPresenters.clear();
+  }
+
+  #renderRoutePointList() {
+    for (let i = 0; i < this.#routePoints.length; i++) {
+      this.#renderRoutePoint(this.#routePoints[i]);
+    }
   }
 
   #handleModeChange = () => {
@@ -75,6 +85,41 @@ export default class TripPresenter {
     render(new NoEvent(), this.#mainContainer);
   }
 
+  #sortRoutePoints(sortType) {
+    switch (sortType) {
+      case SortType.DAY:
+        this.#routePoints.sort(sortRoutePointByDate);
+        break;
+      case SortType.TIME:
+        this.#routePoints.sort(sortRoutePointByDuration);
+        break;
+      case SortType.PRICE:
+        this.#routePoints.sort(sortRoutePointByPrice);
+        break;
+      default:
+        this.#routePoints.sort(sortRoutePointByDate);
+    }
+    this.#currentSortType = sortType;
+  }
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+    this.#sortRoutePoints(sortType);
+    this.#clearRoutePointList();
+    this.#renderRoutePointList();
+  };
+
+  #renderSort() {
+    this.#sorting = new Sorting({
+      onSortTypeChange: this.#handleSortTypeChange,
+      sorting: this.#sortingState,
+    });
+
+    render(this.#sorting, this.#mainContainer);
+  }
+
   #renderApp() {
     this.#renderFilters();
     this.#renderButtonNewEvent();
@@ -84,9 +129,7 @@ export default class TripPresenter {
       return;
     }
 
-    render(this.#sorting, this.#mainContainer);
-    for (let i = 0; i < this.#routePoints.length; i++) {
-      this.#renderRoutePoint(this.#routePoints[i]);
-    }
+    this.#renderSort();
+    this.#renderRoutePointList();
   }
 }
