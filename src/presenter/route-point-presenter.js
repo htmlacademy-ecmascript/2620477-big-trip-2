@@ -2,13 +2,14 @@ import { render, replace, remove } from '../framework/render.js';
 import RoutePoint from '../view/route-point-view.js';
 import FormEdit from '../view/edit-form-view.js';
 import { Mode } from '../mock/constants.js';
-
 export default class RoutePointPresenter {
   #routePointListComponent = null;
   #routePointModel = null;
   #routePointComponent = null;
   #routePointEditComponent = null;
   #routePoint = null;
+  #offersType = null;
+  #destination = null;
   #handleDataChange = null;
   #handleModeChange = null;
   #mode = Mode.DEFAULT;
@@ -22,6 +23,8 @@ export default class RoutePointPresenter {
 
   init(point) {
     this.#routePoint = point;
+    this.#offersType = this.#routePointModel.getOffersByType(point.type);
+    this.#destination = this.#routePointModel.getDestinationsById(point.destination);
 
     const prevRoutePointComponent = this.#routePointComponent;
     const prevRoutePointEditComponent = this.#routePointEditComponent;
@@ -29,17 +32,18 @@ export default class RoutePointPresenter {
     this.#routePointComponent = new RoutePoint({
       routePoint: this.#routePoint,
       offers: [...this.#routePointModel.getOffersById(point.type, point.offersId)],
-      destination: this.#routePointModel.getDestinationsById(point.destination),
+      destination: this.#destination,
       onEditClick: this.#handleEditClick,
       onFavoriteClick: this.#handleFavoriteClick,
     });
 
     this.#routePointEditComponent = new FormEdit({
       routePoint: this.#routePoint,
-      offersType: this.#routePointModel.getOffersByType(point.type),
+      offersType: this.#offersType,
       offers: [...this.#routePointModel.getOffersById(point.type, point.offersId)],
-      destination: this.#routePointModel.getDestinationsById(point.destination),
+      destination: this.#destination,
       destinationAll: this.#routePointModel.destinations,
+      offersAll: [...this.#routePointModel.offers],
       onFormSubmit: this.#handleFormSubmit,
     });
 
@@ -66,12 +70,14 @@ export default class RoutePointPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#routePointEditComponent.reset(this.#routePoint, this.#offersType, this.#destination);
       this.#replaceFormToPoint();
     }
   };
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#routePointEditComponent.reset(this.#routePoint, this.#offersType, this.#destination);
       this.#replaceFormToPoint();
     }
   }

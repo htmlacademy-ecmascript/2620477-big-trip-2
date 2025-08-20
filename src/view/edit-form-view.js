@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeDueDate } from '../mock/utils.js';
 import { DATE_FORMAT, TYPE, CLASS_NAME } from '../mock/constants.js';
 
@@ -126,7 +126,8 @@ function createDestinationTemplate(destination) {
   `;
 }
 
-function createFormEditTemplate(routePoint, offers, destination, offersType, destinationAll) {
+function createFormEditTemplate(state, offers, destinationAll) {
+  const { routePoint, offersType, destination } = state;
 
   return `
     <li class="trip-events__item">
@@ -148,34 +149,92 @@ function createFormEditTemplate(routePoint, offers, destination, offersType, des
   `;
 }
 
-export default class FormEdit extends AbstractView {
-  #routePoint;
+export default class FormEdit extends AbstractStatefulView {
   #offers;
-  #destination;
-  #offersType;
   #destinationAll;
+  #offersAll;
   #handleFormSubmit;
 
-  constructor({ routePoint, offers, destination, offersType, destinationAll, onFormSubmit }) {
+  constructor({ routePoint, offers, destination, offersType, destinationAll, offersAll, onFormSubmit }) {
     super();
-    this.#routePoint = routePoint;
+    this._setState(FormEdit.addsValuesPointToState(routePoint, offersType, destination));
     this.#offers = offers;
-    this.#destination = destination;
-    this.#offersType = offersType;
     this.#destinationAll = destinationAll;
-
+    this.#offersAll = offersAll;
     this.#handleFormSubmit = onFormSubmit;
-    this.element.querySelector('.event--edit')?.addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formSubmitHandler);
-    this.element.querySelector('.event__save-btn').addEventListener('click', (evt) => evt.preventDefault());
+
+    this._restoreHandlers();
   }
 
   get template() {
-    return createFormEditTemplate(this.#routePoint, this.#offers, this.#destination, this.#offersType, this.#destinationAll);
+    return createFormEditTemplate(this._state, this.#offers, this.#destinationAll, this.#offersAll);
   }
+
+  reset(routePoint, offersType, destination) {
+    this.updateElement(
+      FormEdit.addsValuesPointToState(routePoint, offersType, destination),
+    );
+  }
+
+  _restoreHandlers() {
+    this.element.querySelector('.event--edit')?.addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#exitsWithoutSaving);
+    this.element.querySelector('.event__save-btn').addEventListener('click', (evt) => evt.preventDefault());
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeToggleHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationToggleHandler);
+  }
+
+  #exitsWithoutSaving = (evt) => {
+    evt.preventDefault();
+    if (evt.isTrusted) {
+      document.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'Escape',
+      }));
+    }
+  };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#routePoint);
+    this.#handleFormSubmit(FormEdit.retrievesValuesStateToPoint(this._state));
   };
+
+  #typeToggleHandler = (evt) => {
+    this.updateElement({
+      routePoint: {
+        ...this._state.routePoint,
+        type: evt.target.value,
+      },
+      offersType: this.#offersAll.find((offer) => offer.type === evt.target.value),
+    });
+  };
+
+  #destinationToggleHandler = (evt) => {
+    const name = evt.target.value;
+    const destinationNames = [];
+    this.#destinationAll.forEach((element) => {
+      destinationNames.push(element.name);
+    });
+
+    if (!destinationNames.includes(name)) {
+      evt.target.value = '';
+      return '';
+    }
+    if (name) {
+      this.updateElement({
+        destination: this.#destinationAll.find((item) => item.name === name),
+      });
+    }
+  };
+
+  static addsValuesPointToState(routePoint, offersType, destination) {
+    return {
+      routePoint: { ...routePoint },
+      offersType: { ...offersType },
+      destination: { ...destination },
+    };
+  }
+
+  static retrievesValuesStateToPoint(state) {
+    return { ...state };
+  }
 }
