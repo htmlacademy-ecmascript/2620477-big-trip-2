@@ -1,6 +1,8 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeDueDate } from '../mock/utils.js';
 import { DATE_FORMAT, TYPE, CLASS_NAME } from '../mock/constants.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 function createTypeTemplate(routePoint, destination, destinationAll) {
   const { type, id } = routePoint;
@@ -131,7 +133,7 @@ function createFormEditTemplate(state, offers, destinationAll) {
 
   return `
     <li class="trip-events__item">
-    <form class="event event--edit" action="#" method="post">
+    <form class="event event--edit" action="#" method="post" autocomplete="off">
       <header class="event__header">
         ${createTypeTemplate(routePoint, destination, destinationAll)}
         ${createDateTemplate(routePoint)}
@@ -154,6 +156,8 @@ export default class FormEdit extends AbstractStatefulView {
   #destinationAll;
   #offersAll;
   #handleFormSubmit;
+  #datepickerStart;
+  #datepickerEnd;
 
   constructor({ routePoint, offers, destination, offersType, destinationAll, offersAll, onFormSubmit }) {
     super();
@@ -170,6 +174,19 @@ export default class FormEdit extends AbstractStatefulView {
     return createFormEditTemplate(this._state, this.#offers, this.#destinationAll, this.#offersAll);
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepickerStart) {
+      this.#datepickerStart.destroy();
+      this.#datepickerStart = null;
+    }
+    if (this.#datepickerEnd) {
+      this.#datepickerEnd.destroy();
+      this.#datepickerEnd = null;
+    }
+  }
+
   reset(routePoint, offersType, destination) {
     this.updateElement(
       FormEdit.addsValuesPointToState(routePoint, offersType, destination),
@@ -182,6 +199,9 @@ export default class FormEdit extends AbstractStatefulView {
     this.element.querySelector('.event__save-btn').addEventListener('click', (evt) => evt.preventDefault());
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeToggleHandler);
     this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationToggleHandler);
+
+    this.#setDatepickerStart();
+    this.#setDatepickerEnd();
   }
 
   #exitsWithoutSaving = (evt) => {
@@ -225,6 +245,51 @@ export default class FormEdit extends AbstractStatefulView {
       });
     }
   };
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      routePoint: {
+        ...this._state.routePoint,
+        dateFrom: userDate,
+      },
+    });
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      routePoint: {
+        ...this._state.routePoint,
+        dateTo: userDate,
+      },
+    });
+  };
+
+  #setDatepickerStart() {
+    this.#datepickerStart = flatpickr(
+      this.element.querySelector('[name="event-start-time"]'),
+      {
+        dateFormat: 'd/m/y h:i',
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.routePoint.dateFrom,
+        onChange: this.#dateFromChangeHandler,
+      },
+    );
+  }
+
+  #setDatepickerEnd() {
+    this.#datepickerStart = flatpickr(
+      this.element.querySelector('[name="event-end-time"]'),
+      {
+        dateFormat: 'd/m/y h:i',
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.routePoint.dateTo,
+        onChange: this.#dateToChangeHandler,
+        minDate: this._state.routePoint.dateFrom,
+      },
+    );
+  }
 
   static addsValuesPointToState(routePoint, offersType, destination) {
     return {
