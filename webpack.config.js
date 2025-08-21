@@ -11,6 +11,9 @@ module.exports = {
   },
   devtool: 'source-map',
   plugins: [
+    new HtmlPlugin({
+      template: 'public/index.html',
+    }),
     new CopyPlugin({
       patterns: [
         {
@@ -20,9 +23,6 @@ module.exports = {
           },
         },
       ],
-    }),
-    new HtmlPlugin({
-      template: 'public/index.html',
     }),
   ],
   module: {
@@ -41,6 +41,6 @@ module.exports = {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader']
       },
-    ]
-  }
+    ],
+  },
 };
