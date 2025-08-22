@@ -1,5 +1,5 @@
 import flatpickr from 'flatpickr';
-import { FilterType } from '../constants.js';
+import { FilterType, SortingType } from '../constants.js';
 
 const TIME_FORMAT = 'H:i';
 const DATE_FORMAT_EVENT = 'M d';
@@ -7,21 +7,9 @@ const DATE_TIME_FORMAT = 'Y-m-dTH:i';
 const DATE_YEAR_FORMAT = 'Y-m-d';
 const DATE_TIME_FORMAT_EDIT = 'y/m/d H:i';
 
-const getRandomInteger = (a = 0, b = 50) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  const result = Math.random() * (upper - lower + 1) + lower;
-  return Math.floor(result);
-};
-
-const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
-
-const filter = {
-  [FilterType.EVERYTHING]: (tripPoints) => tripPoints.filter((point) => point !== undefined),
-  [FilterType.FUTURE]: (tripPoints) => tripPoints.filter((point) => new Date() < new Date(point.dateFrom)),
-  [FilterType.PRESENT]: (tripPoints) => tripPoints.filter((point) => new Date() > new Date(point.dateFrom) && new Date() < new Date(point.dateTo)),
-  [FilterType.PAST]: (tripPoints) => tripPoints.filter((point) => new Date() > new Date(point.dateTo)),
-};
+function generateSortTypesList() {
+  return Object.values(SortingType);
+}
 
 function humanizePointTime(dueDate) {
   return dueDate ? flatpickr.formatDate(new Date(dueDate), TIME_FORMAT) : '';
@@ -71,6 +59,23 @@ function sortPointsByPrice(pointA, pointB) {
   return pointA.basePrice - pointB.basePrice;
 }
 
-export { getRandomArrayElement, getRandomInteger, filter, humanizePointTime, humanizePointDate,
-  humanizeDateTime, humanizeDateYear,humanizeDateTimeEdit, msToTime,
-  sortPointsByDay, sortPointsByTime, sortPointsByPrice };
+const filter = {
+  [FilterType.EVERYTHING]: (points) => points.filter((point) => point !== undefined),
+  [FilterType.FUTURE]: (points) => points.filter((point) => new Date() < new Date(point.dateFrom)),
+  [FilterType.PRESENT]: (points) => points.filter((point) => new Date() > new Date(point.dateFrom) && new Date() < new Date(point.dateTo)),
+  [FilterType.PAST]: (points) => points.filter((point) => new Date() > new Date(point.dateTo)),
+};
+
+export {
+  filter,
+  humanizePointTime,
+  humanizePointDate,
+  humanizeDateTime,
+  humanizeDateYear,
+  humanizeDateTimeEdit,
+  msToTime,
+  sortPointsByDay,
+  sortPointsByTime,
+  sortPointsByPrice,
+  generateSortTypesList,
+};
