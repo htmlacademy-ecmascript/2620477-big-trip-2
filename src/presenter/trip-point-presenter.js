@@ -15,11 +15,10 @@ export default class TripEventPresenter {
   #onOpenEditForm = null;
   #allTypesEvent = null;
   #allNamesDestination = null;
-  #tripPointsModel = null;
+  #pointsModel = null;
   #mode = Mode.DEFAULT;
 
-  constructor({ offersById, destination, offersByType, handlePointDataChange, onOpenEditForm,
-    allTypesEvent, allNamesDestination, tripPointsModel, tripPointListComponent }) {
+  constructor({ offersById, destination, offersByType, handlePointDataChange, onOpenEditForm, allTypesEvent, allNamesDestination, pointsModel, tripPointListComponent }) {
     this.#offersById = offersById;
     this.#destination = destination;
     this.#offersByType = offersByType;
@@ -27,7 +26,7 @@ export default class TripEventPresenter {
     this.#onOpenEditForm = onOpenEditForm;
     this.#allTypesEvent = allTypesEvent;
     this.#allNamesDestination = allNamesDestination;
-    this.#tripPointsModel = tripPointsModel;
+    this.#pointsModel = pointsModel;
     this.#tripPointListComponent = tripPointListComponent;
   }
 
@@ -55,7 +54,7 @@ export default class TripEventPresenter {
       onFormSubmit: this.#saveEdit,
       allTypesEvent: this.#allTypesEvent,
       allNamesDestination: this.#allNamesDestination,
-      tripPointsModel: this.#tripPointsModel,
+      pointsModel: this.#pointsModel,
       onDeleteClick: this.#deletePoint,
       mode: Mode.EDITING,
     });
