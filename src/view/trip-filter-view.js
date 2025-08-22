@@ -22,7 +22,7 @@ function createListFilterTemplate(filterItems, currentFilterType) {
     .map((filter) => createFilterTemplate(filter, currentFilterType))
     .join('');
 
-  return `<form class="trip-filters" action="#" method="get">
+  return `<form class="trip-filters" action="#" method="get" autocomlete="off">
       ${filterItemsTemplate}
     <button class="visually-hidden" type="submit">Accept filter</button>
     </form>`;
