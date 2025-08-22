@@ -81,6 +81,27 @@ export default class NewTripEventPresenter {
     }
   }
 
+  setSaving() {
+    if (this.#mode === Mode.ADDING) {
+      this.#newPointComponent.updateElement({
+        isSaving: true,
+        isDisabled: true,
+      });
+    }
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#newPointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#newPointComponent.shake(resetFormState);
+  }
+
   #deleteEmptyElement() {
     this.#emptyPointsListElements = document.querySelectorAll('.trip-events__msg');
     this.#emptyPointsListElements.forEach((el) => el.remove());
