@@ -69,11 +69,59 @@ export default class TripEventPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#editPointComponent, prevEditPointComponent);
+      replace(this.#tripPointComponent, prevEditPointComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevTripPointComponent);
     remove(prevEditPointComponent);
+  }
+
+  destroy = () => {
+    remove(this.#tripPointComponent);
+    remove(this.#editPointComponent);
+  };
+
+  resetView = () => {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#editPointComponent.reset(this.#point);
+      this.#replaceEditToPoint();
+    }
+  };
+
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editPointComponent.updateElement({
+        isSaving: true,
+        isDisabled: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editPointComponent.updateElement({
+        isDeleting: true,
+        isDisabled: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#tripPointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#editPointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editPointComponent.shake(resetFormState);
   }
 
   #replacePointToEdit = () => {
@@ -124,7 +172,6 @@ export default class TripEventPresenter {
       isMinorUpdate ? UpdateType.MINOR : UpdateType.MAJOR,
       update,
     );
-    this.#replaceEditToPoint();
   };
 
   #deletePoint = (point) => {
@@ -133,17 +180,5 @@ export default class TripEventPresenter {
       UpdateType.MINOR,
       point,
     );
-  };
-
-  resetView = () => {
-    if (this.#mode !== Mode.DEFAULT) {
-      this.#editPointComponent.reset(this.#point);
-      this.#replaceEditToPoint();
-    }
-  };
-
-  destroy = () => {
-    remove(this.#tripPointComponent);
-    remove(this.#editPointComponent);
   };
 }
