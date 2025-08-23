@@ -52,11 +52,8 @@ const ApiService = {
 };
 
 const NewPoint = {
-  'basePrice': '',
-  'dateFrom': new Date(),
-  'dateTo': new Date(),
+  'basePrice': 0,
   'isFavorite': false,
-  'offers': [],
   'type': 'flight',
 };
 

@@ -115,6 +115,8 @@ export default class NewTripEventPresenter {
       UpdateType.MINOR,
       point,
     );
+
+    this.#deleteEmptyElement();
   };
 
   #handleDeleteClick = () => {

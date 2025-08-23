@@ -1,4 +1,4 @@
-import { render,replace, remove } from '../framework/render.js';
+import { render, replace, remove } from '../framework/render.js';
 import ListFilterView from '../view/trip-filter-view.js';
 import { filter } from '../utils/utils.js';
 import { FilterType, UpdateType } from '../constants.js';
