@@ -3,6 +3,7 @@ import ListSortView from '../view/trip-sort-view.js';
 import TripPointListView from '../view/trip-point-list-view.js';
 import EmptyPointsListView from '../view/empty-point-list-view.js';
 import LoadingView from '../view/loading-view.js';
+import ErrorLoadingView from '../view/error-loading-view.js';
 import TripEventPresenter from './trip-point-presenter.js';
 import NewTripEventPresenter from './new-trip-presenter.js';
 import { remove, render, RenderPosition } from '../framework/render.js';
@@ -18,6 +19,7 @@ export default class TripEventsPresenter {
   #listSortComponent = null;
   #tripPointListComponent = new TripPointListView();
   #loadingComponent = new LoadingView();
+  #errorLoadingComponent = new ErrorLoadingView();
   #emptyPointsListComponent = null;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
@@ -29,6 +31,7 @@ export default class TripEventsPresenter {
   #currentSortType = SortingType.DAY;
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
+  #isErrorLoading = false;
 
   constructor({ tripEventsContainer, pointsModel, filterModel, onNewPointDestroy}) {
     this.#tripEventsContainer = tripEventsContainer;
@@ -95,7 +98,7 @@ export default class TripEventsPresenter {
 
   #renderPoint(point) {
     const tripEventPresenter = new TripEventPresenter({
-      offersById: [...this.#pointsModel.getOfferById(point.type, point.offers)],
+      offersById: [...this.#pointsModel.getOffersById(point.type, point.offers)],
       destination: this.#pointsModel.getDestinationById(point.destination),
       offersByType: this.#pointsModel.getOffersByType(point.type),
       handlePointDataChange: this.#handleViewAction,
@@ -116,6 +119,10 @@ export default class TripEventsPresenter {
 
   #renderLoading() {
     render(this.#loadingComponent, this.#tripEventsContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderErrorLoading() {
+    render(this.#errorLoadingComponent, this.#tripEventsContainer, RenderPosition.AFTERBEGIN);
   }
 
   #renderEmptyPointsList() {
@@ -182,6 +189,12 @@ export default class TripEventsPresenter {
         remove(this.#loadingComponent);
         this.#renderPointsList();
         break;
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#isErrorLoading = true;
+        this.#renderPointsList();
+        break;
     }
   };
 
@@ -217,6 +230,11 @@ export default class TripEventsPresenter {
   #renderPointsList() {
     if (this.#isLoading) {
       this.#renderLoading();
+      return;
+    }
+
+    if (this.#isErrorLoading) {
+      this.#renderErrorLoading();
       return;
     }
 
