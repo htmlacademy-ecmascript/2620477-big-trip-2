@@ -47,7 +47,7 @@ const EndPoint = {
 };
 
 const ApiService = {
-  AUTHORIZATION: 'Basic dsfsw323dcfarkhlk8',
+  AUTHORIZATION: 'Basic dsfsw323dasdadad2wk8',
   END_POINT: 'https://22.objects.htmlacademy.pro/big-trip',
 };
 
@@ -67,6 +67,8 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
+const SORTED_POINTS_LENGTH = 3;
+
 export {
   FilterType,
   SortingType,
@@ -79,4 +81,5 @@ export {
   EndPoint,
   ApiService,
   TimeLimit,
+  SORTED_POINTS_LENGTH,
 };

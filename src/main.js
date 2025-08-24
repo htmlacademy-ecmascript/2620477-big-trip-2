@@ -56,7 +56,6 @@ async function unlockAddNewEventBtn() {
     addNewPointBtnElement.disabled = false;
   } catch (err) {
     addNewPointBtnElement.disabled = true;
-    throw new Error('Can\'t get points');
   }
 }
 

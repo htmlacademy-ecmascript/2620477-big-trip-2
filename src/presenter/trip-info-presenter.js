@@ -1,6 +1,7 @@
 import { render, replace, remove, RenderPosition } from '../framework/render.js';
 import { sortPointsByDay, humanizePointDateForInfo } from '../utils/utils.js';
 import TripInfoView from '../view/trip-info-view.js';
+import { SORTED_POINTS_LENGTH } from '../constants.js';
 
 export default class TripInfoPresenter {
   #tripInfoContainer = null;
@@ -28,7 +29,7 @@ export default class TripInfoPresenter {
     if (sortedPointsByDay.length === 0) {
       return null;
     }
-    if (sortedPointsNames.length <= 3) {
+    if (sortedPointsNames.length <= SORTED_POINTS_LENGTH) {
       return sortedPointsNames.join(' &mdash; ');
     } return `${ sortedPointsNames[0] } &mdash; ... &mdash; ${ sortedPointsNames[sortedPointsNames.length - 1] }`;
   }
