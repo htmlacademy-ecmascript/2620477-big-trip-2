@@ -1,9 +1,9 @@
-import TripEventsPresenter from './presenter/trip-points-presenter.js';
+import TripEventsPresenter from './presenter/trip-events-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import TripInfoPresenter from './presenter/trip-info-presenter.js';
-import PointsModel from './model/trip-points-model.js';
+import PointsModel from './model/points-model.js';
 import FilterModel from './model/filter-model.js';
-import PointsApiService from './api-points.js';
+import PointsApiService from './points-api-service.js';
 import { ApiService } from './constants.js';
 
 const tripMainElement = document.querySelector('.trip-main');

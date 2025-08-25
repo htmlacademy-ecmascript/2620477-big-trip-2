@@ -1,11 +1,11 @@
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
-import ListSortView from '../view/trip-sort-view.js';
+import ListSortView from '../view/list-sort-view.js';
 import TripPointListView from '../view/trip-point-list-view.js';
-import EmptyPointsListView from '../view/empty-point-list-view.js';
+import EmptyPointsListView from '../view/empty-points-list-view.js';
 import LoadingView from '../view/loading-view.js';
 import ErrorLoadingView from '../view/error-loading-view.js';
-import TripEventPresenter from './trip-point-presenter.js';
-import NewTripEventPresenter from './new-trip-presenter.js';
+import TripEventPresenter from './trip-event-presenter.js';
+import NewTripEventPresenter from './new-trip-event-presenter.js';
 import { remove, render, RenderPosition } from '../framework/render.js';
 import { generateSortTypesList, sortPointsByDay, sortPointsByTime, sortPointsByPrice, filter } from '../utils/utils.js';
 import { FilterType, SortingType, UpdateType, UserAction, TimeLimit } from '../constants.js';
