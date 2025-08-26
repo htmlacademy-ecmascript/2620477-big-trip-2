@@ -34,11 +34,19 @@ export default class ListSortView extends AbstractView {
     this.#sortTypes = sortTypes;
     this.#currentSortType = currentSortType;
     this.#handleSortTypeChange = onSortTypeChange;
-    this.element.addEventListener('click', this.#sortTypeChangeHandler);
+
+    this.#addEventListeners();
   }
 
   get template() {
     return createListSortTemplate(this.#sortTypes, this.#currentSortType);
+  }
+
+  #addEventListeners() {
+    const sortInputs = this.element.querySelectorAll('.trip-sort__input');
+    sortInputs.forEach((input) => {
+      input.addEventListener('click', this.#sortTypeChangeHandler);
+    });
   }
 
   #sortTypeChangeHandler = (evt) => {

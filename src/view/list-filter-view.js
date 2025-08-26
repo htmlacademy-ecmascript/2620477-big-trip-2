@@ -39,11 +39,18 @@ export default class ListFilterView extends AbstractView {
     this.#currentFilterType = currentFilterType;
     this.#handleFilterTypeChange = onFilterTypeChange;
 
-    this.element.addEventListener('change', this.#filterTypeChangeHandler);
+    this.#addEventListeners();
   }
 
   get template() {
     return createListFilterTemplate(this.#filters, this.#currentFilterType, this.#handleFilterTypeChange);
+  }
+
+  #addEventListeners() {
+    const filterInputs = this.element.querySelectorAll('.trip-filters__filter-input');
+    filterInputs.forEach((input) => {
+      input.addEventListener('change', this.#filterTypeChangeHandler);
+    });
   }
 
   #filterTypeChangeHandler = (evt) => {

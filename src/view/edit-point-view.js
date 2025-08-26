@@ -268,33 +268,37 @@ export default class EditPointView extends AbstractStatefulView {
   };
 
   #setDatepickers = () => {
-    const [ dateFromElement, dateToElement ] = this.element.querySelectorAll('.event__input--time');
+    const dateInputs = this.element.querySelectorAll('.event__input--time');
     const dateFormatConfig = {
       dateFormat: 'd/m/y H:i',
       enableTime: true,
-      Locale: {firstDay0fWeek: 1},
-      'time_24hr': true
+      locale: { firstDayOfWeek: 1 },
+      'time_24hr': true,
     };
 
-    this.#datepickerFrom = flatpickr(
-      dateFromElement,
-      {
-        ...dateFormatConfig,
-        defaultDate: this._state.dateFrom,
-        onClose: this.#dateFromChangeHandler,
-        maxDate: this._state.dateTo
+    dateInputs.forEach((input, index) => {
+      if (index === 0) {
+        this.#datepickerFrom = flatpickr(
+          input,
+          {
+            ...dateFormatConfig,
+            defaultDate: this._state.dateFrom,
+            onClose: this.#dateFromChangeHandler,
+            maxDate: this._state.dateTo,
+          }
+        );
+      } else if (index === 1) {
+        this.#datepickerTo = flatpickr(
+          input,
+          {
+            ...dateFormatConfig,
+            defaultDate: this._state.dateTo,
+            onClose: this.#dateToChangeHandler,
+            minDate: this._state.dateFrom,
+          }
+        );
       }
-    );
-
-    this.#datepickerTo = flatpickr(
-      dateToElement,
-      {
-        ...dateFormatConfig,
-        defaultDate: this._state.dateTo,
-        onClose: this.#dateToChangeHandler,
-        minDate: this._state.dateFrom
-      }
-    );
+    });
   };
 
   static parsePointToState = ({ point }) => (

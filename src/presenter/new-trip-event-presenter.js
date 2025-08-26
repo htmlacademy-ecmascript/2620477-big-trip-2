@@ -1,5 +1,5 @@
 import TripPointListView from '../view/trip-point-list-view.js';
-import EmptyPointsListView from '../view/empty-point-list-view.js';
+import EmptyPointsListView from '../view/empty-points-list-view.js';
 import { remove, render, RenderPosition } from '../framework/render.js';
 import EditPointView from '../view/edit-point-view.js';
 import { UserAction, UpdateType, Mode, FilterType, NewPoint} from '../constants.js';
@@ -42,12 +42,13 @@ export default class NewTripEventPresenter {
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
 
-    if (this.#emptyPointsListElements.length !== 0) {
-      this.#deleteEmptyElement();
-      render(this.#tripPointListComponent, this.#tripEventsElement);
-      render(this.#newPointComponent, this.#tripPointListComponent.element, RenderPosition.AFTERBEGIN);
-      return;
-    }
+    this.#emptyPointsListElements.forEach((element) => {
+      if (element) {
+        this.#deleteEmptyElement();
+        render(this.#tripPointListComponent, this.#tripEventsElement);
+        render(this.#newPointComponent, this.#tripPointListComponent.element, RenderPosition.AFTERBEGIN);
+      }
+    });
 
     if (this.#tripEventsListElement) {
       this.#deleteEmptyElement();
